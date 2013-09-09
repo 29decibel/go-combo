@@ -13,10 +13,12 @@ comboBase: 'http://localhost:8123/combo?',
 
 #### Start gocombo server
 ```
-$ ./server/server --base="/Users/your-name/projects/yui3/build/"
+$ ./server/server --base="/Users/your-name/projects/yui3/build/" --port=4444
 ```
 
 ### TODO
 * TEST
 * resource cache
+* version number support
+* √ custom port
 

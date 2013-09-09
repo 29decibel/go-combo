@@ -4,8 +4,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strings"
-  "regexp"
 )
 
 // it could be in the file system, it could be in the s3
@@ -30,10 +30,10 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	comboReq := Request{Resources: resources}
 
 	// get the current dir
-  baseDir := OptionValue("--base")
-  if len(baseDir) >0 {
+	baseDir := OptionValue("--base")
+	if len(baseDir) > 0 {
 		comboReq.BasePath = baseDir
-  }
+	}
 
 	// set header of the response
 	acceptHeader := strings.Join(request.Header["Accept"], ",")
@@ -46,19 +46,27 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	io.WriteString(responseWriter, comboReq.ResponseString())
 }
 
-
 func updateImagePath(resourceName string, contents string) string {
-  // replace url(./sorting.png) to
-  // ....
-  imageReg := regexp.MustCompile("url\\('?(.*?)'?\\)")
+	// replace url(./sorting.png) to
+	// ....
+	imageReg := regexp.MustCompile("url\\('?(.*?)'?\\)")
 
-  contents = imageReg.ReplaceAllString(contents, "url(" + stripVersionNumber(resourceName) +"/$1)")
-  return contents
+	_, path, _ := splitResourceName(resourceName)
+	contents = imageReg.ReplaceAllString(contents, "url("+path+"/$1)")
+	return contents
 }
 
-func stripVersionNumber(name string) string {
+// given resource name : 3.12.0/event-hover/event-hover-min.js
+// return parts like [versionNumber][path][fileName]
+// [3.12.0] [event-hovea] [event-hover-min.js]
+func splitResourceName(name string) (string, string, string) {
 	parts := strings.Split(name, "/")
-	return strings.Join(parts[1:len(parts)-1], "/")
+
+	// pick the interesting part
+	versionNumber := parts[0]
+	path := strings.Join(parts[1:len(parts)-1], "/")
+	fileName := parts[len(parts)-1]
+	return versionNumber, path, fileName
 }
 
 func (request Request) ResponseString() string {

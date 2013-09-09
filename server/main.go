@@ -10,12 +10,18 @@ import (
 const Port = ":8123"
 
 func main() {
-  fmt.Println("Start YUI combo handler server(http://localhost" + Port + ") ....")
 
   // TODO replace "./" into the given base path
   http.Handle("/", http.FileServer(http.Dir(gocombo.OptionValue("--base"))))
 
   http.HandleFunc("/combo", gocombo.ServeHTTP)
 
-  log.Fatal(http.ListenAndServe(Port, nil))
+  // custom port
+  port := ":" + gocombo.OptionValue("--port")
+  if len(port) != 5 {
+    port = Port
+  }
+
+  fmt.Println("Start YUI combo handler server(http://localhost" + port + ") ....")
+  log.Fatal(http.ListenAndServe(port, nil))
 }
