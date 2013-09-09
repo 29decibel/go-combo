@@ -4,8 +4,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
+  "regexp"
 )
 
 // it could be in the file system, it could be in the s3
@@ -30,12 +30,10 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	comboReq := Request{Resources: resources}
 
 	// get the current dir
-	for _, arg := range os.Args {
-		options := strings.Split(arg, "=")
-		if len(options) > 1 && options[0] == "--base" {
-			comboReq.BasePath = options[1]
-		}
-	}
+  baseDir := OptionValue("--base")
+  if len(baseDir) >0 {
+		comboReq.BasePath = baseDir
+  }
 
 	// set header of the response
 	acceptHeader := strings.Join(request.Header["Accept"], ",")
@@ -46,6 +44,21 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	}
 
 	io.WriteString(responseWriter, comboReq.ResponseString())
+}
+
+
+func updateImagePath(resourceName string, contents string) string {
+  // replace url(./sorting.png) to
+  // ....
+  imageReg := regexp.MustCompile("url\\('?(.*?)'?\\)")
+
+  contents = imageReg.ReplaceAllString(contents, "url(" + stripVersionNumber(resourceName) +"/$1)")
+  return contents
+}
+
+func stripVersionNumber(name string) string {
+	parts := strings.Split(name, "/")
+	return strings.Join(parts[1:len(parts)-1], "/")
 }
 
 func (request Request) ResponseString() string {
@@ -81,5 +94,5 @@ func readFile(request Request, contentsChanel chan string, resourceName string) 
 	if err != nil {
 		panic(err)
 	}
-	contentsChanel <- string(contents)
+	contentsChanel <- updateImagePath(resourceName, string(contents))
 }
