@@ -1,70 +1,78 @@
 package gocombo
 
 import (
-  "fmt"
-  "net/http"
-  "strings"
-  "io"
-  "io/ioutil"
-  "os"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"strings"
 )
 
-
 // it could be in the file system, it could be in the s3
-const DirLocation = "./default-yui-built-files"
+const (
+	DirLocation   = "./default-yui-built-files"
+	ContentType   = "Content-Type"
+	JSContentType = "application/javascript; charset=utf-8"
+)
 
 type Request struct {
-  Resources []string
-  Type string
-  BasePath string
+	Resources []string
+	Type      string
+	BasePath  string
 }
-
 
 func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
-  // get the resources
-  resources := strings.Split(request.URL.RawQuery, "&")
+	// get the resources
+	resources := strings.Split(request.URL.RawQuery, "&")
 
-  // create the combo request
-  comboReq := Request{Resources: resources}
+	// create the combo request
+	comboReq := Request{Resources: resources}
 
-  // get the current dir
-  for _, arg := range os.Args {
-    fmt.Println(arg)
-    options := strings.Split(arg, "=")
-    if len(options) > 1 && options[0] == "--base" {
-      comboReq.BasePath = options[1]
-    }
-  }
+	// get the current dir
+	for _, arg := range os.Args {
+		options := strings.Split(arg, "=")
+		if len(options) > 1 && options[0] == "--base" {
+			comboReq.BasePath = options[1]
+		}
+	}
 
-  responseWriter.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+	responseWriter.Header().Set(ContentType, JSContentType)
 
-  io.WriteString(responseWriter, comboReq.ResponseString())
+	io.WriteString(responseWriter, comboReq.ResponseString())
 }
 
+func (request Request) ResponseString() string {
+	contents := ""
 
-func (request Request)ResponseString() string{
-  contents := ""
-  for _, resourceName := range request.Resources {
-    contents += readFile(request, resourceName)
-  }
+	// use a chanel to collect the resource contents
+	contentsChanel := make(chan string)
+	for _, resourceName := range request.Resources {
+		go readFile(request, contentsChanel, resourceName)
+	}
 
-  return contents
+	// collect contents here
+	for i := 0; i < len(request.Resources); i++ {
+		contents += <-contentsChanel
+	}
+
+	return contents
 }
 
-func readFile(request Request, resourceName string) string {
-  parts := strings.Split(resourceName, "/")
-  path := strings.Join(parts[1:], "/")
+// read file to chanel
+func readFile(request Request, contentsChanel chan string, resourceName string) {
+	parts := strings.Split(resourceName, "/")
+	path := strings.Join(parts[1:], "/")
 
-  var fileName string
-  if len(request.BasePath) > 1 {
-    fileName = request.BasePath + path
-  } else {
-    fileName = DirLocation + path
-  }
-  // get the file name
-  contents, err := ioutil.ReadFile(fileName)
-  if err != nil { panic(err) }
-  return string(contents)
+	var fileName string
+	if len(request.BasePath) > 1 {
+		fileName = request.BasePath + path
+	} else {
+		fileName = DirLocation + path
+	}
+	// get the file name
+	contents, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		panic(err)
+	}
+	contentsChanel <- string(contents)
 }
-
-

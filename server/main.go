@@ -10,7 +10,7 @@ import (
 const Port = ":8123"
 
 func main() {
-  fmt.Println("Start combo server here....")
+  fmt.Println("Start YUI combo handler server(http://localhost" + Port + ") ....")
 
   http.HandleFunc("/combo", gocombo.ServeHTTP)
 
