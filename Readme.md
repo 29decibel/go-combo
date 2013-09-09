@@ -1,17 +1,22 @@
-## YUI3 Combo Handler made by Go
+## YUI3 Combo Handler made by [Go](http://golang.org)
 
-> Development in progress
+> **Development in progress, not ready for production**
 
 ### Basic usage
+#### YUI3 configuration
 ```
-// YUI3 side
 ....
 combine:true,
 comboBase: 'http://localhost:8123/combo?',
 ....
 ```
 
+#### Start gocombo server
 ```
-// start gocombo server
 $ ./server/server --base="/Users/your-name/projects/yui3/build/"
 ```
+
+### TODO
+* TEST
+* resource cache
+
