@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 // it could be in the file system, it could be in the s3
@@ -24,6 +25,7 @@ type Request struct {
 }
 
 func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+	fmt.Printf("%s(%s): %s\n", request.Method, time.Now(), request.URL.Path)
 	// get the resources
 	resources := strings.Split(request.URL.RawQuery, "&")
 
@@ -43,6 +45,10 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	} else {
 		responseWriter.Header().Set(ContentType, JSContentType)
 	}
+
+	// set cookie
+	expires := time.Now().AddDate(3, 0, 0)
+	responseWriter.Header().Set("Expires", expires.Format(time.UnixDate))
 
 	io.WriteString(responseWriter, comboReq.ResponseString())
 }
