@@ -18,14 +18,17 @@ const (
 	CSSContentType = "text/css; charset=utf-8"
 )
 
+// if ignore version
+var ignoreVersion bool = OptionValue("--ignore-version") == "true"
+
 type Request struct {
 	Resources []string
 	Type      string
 	BasePath  string
 }
 
+// handler of combo request
 func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
-	fmt.Printf("%s(%s): %s\n", request.Method, time.Now(), request.URL.Path)
 	// get the resources
 	resources := strings.Split(request.URL.RawQuery, "&")
 
@@ -53,12 +56,16 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	io.WriteString(responseWriter, comboReq.ResponseString())
 }
 
+// replace resource url in css with absolute paht
 func updateImagePath(resourceName string, contents string) string {
 	// replace url(./sorting.png) to
 	// ....
 	imageReg := regexp.MustCompile("url\\('?(.*?)'?\\)")
 
-	_, path, _ := splitResourceName(resourceName)
+	version, path, _ := splitResourceName(resourceName)
+	if !ignoreVersion {
+		path = fmt.Sprintf("%s/build/%s", version, path)
+	}
 	contents = imageReg.ReplaceAllString(contents, fmt.Sprintf("url(%s/$1)", path))
 	return contents
 }
@@ -76,6 +83,7 @@ func splitResourceName(name string) (string, string, string) {
 	return versionNumber, path, fileName
 }
 
+// get the response string of all resources
 func (request Request) ResponseString() string {
 	contents := ""
 
@@ -97,6 +105,11 @@ func (request Request) ResponseString() string {
 func readFile(request Request, contentsChanel chan string, resourceName string) {
 	parts := strings.Split(resourceName, "/")
 	path := strings.Join(parts[1:], "/")
+
+	versionPart := []string{parts[0], "build"}
+	if !ignoreVersion {
+		path = fmt.Sprintf("%s/%s", strings.Join(versionPart, "/"), path)
+	}
 
 	var fileName string
 	if len(request.BasePath) > 1 {
