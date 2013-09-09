@@ -1,6 +1,7 @@
 package gocombo
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -52,7 +53,7 @@ func updateImagePath(resourceName string, contents string) string {
 	imageReg := regexp.MustCompile("url\\('?(.*?)'?\\)")
 
 	_, path, _ := splitResourceName(resourceName)
-	contents = imageReg.ReplaceAllString(contents, "url("+path+"/$1)")
+	contents = imageReg.ReplaceAllString(contents, fmt.Sprintf("url(%s/$1)", path))
 	return contents
 }
 
