@@ -10,9 +10,10 @@ import (
 
 // it could be in the file system, it could be in the s3
 const (
-	DirLocation   = "./default-yui-built-files"
-	ContentType   = "Content-Type"
-	JSContentType = "application/javascript; charset=utf-8"
+	DirLocation    = "./default-yui-built-files"
+	ContentType    = "Content-Type"
+	JSContentType  = "application/javascript; charset=utf-8"
+	CSSContentType = "text/css; charset=utf-8"
 )
 
 type Request struct {
@@ -36,7 +37,13 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 		}
 	}
 
-	responseWriter.Header().Set(ContentType, JSContentType)
+	// set header of the response
+	acceptHeader := strings.Join(request.Header["Accept"], ",")
+	if strings.Contains(acceptHeader, "css") {
+		responseWriter.Header().Set(ContentType, CSSContentType)
+	} else {
+		responseWriter.Header().Set(ContentType, JSContentType)
+	}
 
 	io.WriteString(responseWriter, comboReq.ResponseString())
 }
