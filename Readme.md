@@ -23,10 +23,13 @@ $ ./server/server --base="/Users/your-name/projects/yui3/cdn/" --port=4444
 ### TODO
 * √ ~~version number support~~
 * √ ~~custom port~~
-* resource cache
+* able to resovle relative base dir(gocombo ../yui3/build/ )
+* gh-pages, logo
+* clone YUI instruction
+* get OptionValue performance issue
+* better command line help(must provide resource base, available options)
 * compiled executable program for Linux platform
-* reading files from CDN(http)
 * https support
 * performance test
-* TEST
+* more tests
 

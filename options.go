@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// get option value of command
 func OptionValue(name string) string {
 	for _, arg := range os.Args {
 		options := strings.Split(arg, "=")

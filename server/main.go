@@ -25,3 +25,9 @@ func main() {
   fmt.Println(fmt.Sprintf("Start YUI combo handler server(http://localhost%s) ...", port))
   log.Fatal(http.ListenAndServe(port, nil))
 }
+
+// check commandline options
+// --base
+// --ignore-version
+func checkCmdOptions(){
+}

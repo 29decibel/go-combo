@@ -20,26 +20,25 @@ const (
 
 // if ignore version
 var ignoreVersion bool = OptionValue("--ignore-version") == "true"
+var baseDir string = OptionValue("--base")
 
-type Request struct {
+// Request represent a combo resource request, either js or css
+type ComboRequest struct {
+	// names of resources
 	Resources []string
-	Type      string
-	BasePath  string
+	// the resource type
+	Type     string
+	BasePath string
 }
 
 // handler of combo request
+// given http request, create a ComboRequest
 func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	// get the resources
 	resources := strings.Split(request.URL.RawQuery, "&")
 
 	// create the combo request
-	comboReq := Request{Resources: resources}
-
-	// get the current dir
-	baseDir := OptionValue("--base")
-	if len(baseDir) > 0 {
-		comboReq.BasePath = baseDir
-	}
+	comboReq := ComboRequest{Resources: resources, BasePath: baseDir}
 
 	// set header of the response
 	acceptHeader := strings.Join(request.Header["Accept"], ",")
@@ -84,7 +83,7 @@ func splitResourceName(name string) (string, string, string) {
 }
 
 // get the response string of all resources
-func (request Request) ResponseString() string {
+func (request ComboRequest) ResponseString() string {
 	contents := ""
 
 	// use a chanel to collect the resource contents
@@ -102,7 +101,7 @@ func (request Request) ResponseString() string {
 }
 
 // read file to chanel
-func readFile(request Request, contentsChanel chan string, resourceName string) {
+func readFile(request ComboRequest, contentsChanel chan string, resourceName string) {
 	parts := strings.Split(resourceName, "/")
 	path := strings.Join(parts[1:], "/")
 
