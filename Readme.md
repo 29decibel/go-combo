@@ -4,7 +4,7 @@
 
 ### Basic usage
 #### YUI3 configuration
-```
+```javascript
 ....
 combine:true,
 comboBase: 'http://localhost:8123/combo?',
@@ -12,20 +12,26 @@ comboBase: 'http://localhost:8123/combo?',
 ```
 
 #### Start gocombo server
-```
-// directly use build dir:  /build/node-module/....
-$ ./server/server --base="/Users/your-name/projects/yui3/build/" --port=4444 --ignore-version=true
+```bash
+# clone YUI3 into dir
+$ git clone git@github.com:yui/yui3.git
 
-// cdn dir structure: /cdn/0.0.1/build/node-module/....
-$ ./server/server --base="/Users/your-name/projects/yui3/cdn/" --port=4444
+# start gocombo (custom port like --port=4444)
+$ ./server/server --base="./yui3/build/"
+
+
+# you can also put different yui3 versions into different directories like this
+# ./yui3/3.10.1/build/.
+# ./yui3/3.11.0/build/.
+$ ./server/server --base="./yui3/"  --with-version=true
 ```
 
 ### TODO
-* √ ~~version number support~~
-* √ ~~custom port~~
-* able to resovle relative base dir(gocombo ../yui3/build/ )
+* ~~version number support~~
+* ~~custom port~~
+* ~~able to resovle relative base dir(gocombo ../yui3/build/ )~~
+* ~~clone YUI instruction~~
 * gh-pages, logo
-* clone YUI instruction
 * get OptionValue performance issue
 * better command line help(must provide resource base, available options)
 * compiled executable program for Linux platform

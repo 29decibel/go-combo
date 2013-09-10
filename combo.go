@@ -5,6 +5,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -19,8 +21,8 @@ const (
 )
 
 // if ignore version
-var ignoreVersion bool = OptionValue("--ignore-version") == "true"
-var baseDir string = OptionValue("--base")
+var withVersion bool = OptionValue("--with-version") == "true"
+var baseDir string = ResourceDir()
 
 // Request represent a combo resource request, either js or css
 type ComboRequest struct {
@@ -62,7 +64,7 @@ func updateImagePath(resourceName string, contents string) string {
 	imageReg := regexp.MustCompile("url\\('?(.*?)'?\\)")
 
 	version, path, _ := splitResourceName(resourceName)
-	if !ignoreVersion {
+	if withVersion {
 		path = fmt.Sprintf("%s/build/%s", version, path)
 	}
 	contents = imageReg.ReplaceAllString(contents, fmt.Sprintf("url(%s/$1)", path))
@@ -106,15 +108,15 @@ func readFile(request ComboRequest, contentsChanel chan string, resourceName str
 	path := strings.Join(parts[1:], "/")
 
 	versionPart := []string{parts[0], "build"}
-	if !ignoreVersion {
+	if withVersion {
 		path = fmt.Sprintf("%s/%s", strings.Join(versionPart, "/"), path)
 	}
 
 	var fileName string
 	if len(request.BasePath) > 1 {
-		fileName = request.BasePath + path
+		fileName = filepath.Join(request.BasePath, path)
 	} else {
-		fileName = DirLocation + path
+		fileName = filepath.Join(DirLocation, path)
 	}
 	// get the file name
 	contents, err := ioutil.ReadFile(fileName)
@@ -122,4 +124,10 @@ func readFile(request ComboRequest, contentsChanel chan string, resourceName str
 		panic(err)
 	}
 	contentsChanel <- updateImagePath(resourceName, string(contents))
+}
+
+// get the base directory
+func ResourceDir() string {
+	currentDir, _ := os.Getwd()
+	return filepath.Join(currentDir, OptionValue("--base"))
 }

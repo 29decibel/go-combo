@@ -12,7 +12,7 @@ const Port = ":8123"
 func main() {
 
   // TODO replace "./" into the given base path
-  http.Handle("/", http.FileServer(http.Dir(gocombo.OptionValue("--base"))))
+  http.Handle("/", http.FileServer(http.Dir(gocombo.ResourceDir())))
 
   http.HandleFunc("/combo", gocombo.ServeHTTP)
 
