@@ -33,6 +33,8 @@
 
 <blockquote>
 <p><strong>Development in progress, not ready for production</strong></p>
+
+<p><strong>Mac only for now, other platform need to be compiled from source</strong></p>
 </blockquote>
 
 <h3>
@@ -54,19 +56,19 @@
 <span class="nv">$ </span>git clone git@github.com:yui/yui3.git
 
 <span class="c"># start gocombo (custom port like --port=:4321)</span>
-<span class="nv">$ </span>./server/server
+<span class="nv">$ </span>./bin/darwin/gocombo
 
 <span class="c"># That's it! Now your go-combo server is running. If you want to more customization,</span>
 <span class="c"># you can provide ```--base```, ```--with-version``` or ```--port``` flags.</span>
 
 <span class="c"># provide custom yui3 build direcotry</span>
-<span class="nv">$ </span>./server/server --base<span class="o">=</span><span class="s2">"./some-where-else/yui3/build/"</span>
+<span class="nv">$ </span>./bin/darwin/gocombo --base<span class="o">=</span><span class="s2">"./some-where-else/yui3/build/"</span>
 
 
 <span class="c"># you can also put different yui3 versions into different directories like this</span>
 <span class="c"># ./yui3/3.10.1/build/.</span>
 <span class="c"># ./yui3/3.11.0/build/.</span>
-<span class="nv">$ </span>./server/server --base<span class="o">=</span><span class="s2">"./yui3/"</span>  --with-version<span class="o">=</span><span class="nb">true</span>
+<span class="nv">$ </span>./bin/darwin/gocombo --base<span class="o">=</span><span class="s2">"./yui3/"</span>  --with-version<span class="o">=</span><span class="nb">true</span>
 </pre></div>
 
 <h3>
