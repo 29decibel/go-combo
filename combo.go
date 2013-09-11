@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"path/filepath"
 	"regexp"
@@ -124,9 +125,11 @@ func readFile(request ComboRequest, contentsChanel chan string, resourceName str
 	fileName := filepath.Join(comboConfig.BaseDir, path)
 
 	// get the file name
+	// or we can use os.Stat to check if the file exist
+	// if _, err := os.Stat(filename); err == nil
 	contents, err := ioutil.ReadFile(fileName)
 	if err != nil {
-		panic(err)
+		log.Fatal(fmt.Sprintf("Can not read file \"%s\" ! Please check if given --base path is correct.", fileName))
 	}
 	contentsChanel <- updateImagePath(resourceName, string(contents))
 }
