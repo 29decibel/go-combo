@@ -5,6 +5,8 @@ import (
   "log"
   "flag"
   "net/http"
+  "os"
+  "path/filepath"
   "github.com/29decibel/gocombo"
 )
 
@@ -16,16 +18,18 @@ func main() {
   flag.Parse()
 
   // set values of ComboConfig
-  comboConfig := gocombo.ComboConfig{BaseDir: *baseDirP, WithVersion: *withVersionP, Port: *portP}
+	currentDir, _ := os.Getwd()
+  comboConfig := gocombo.ComboConfig{BaseDir: filepath.Join(currentDir, *baseDirP), WithVersion: *withVersionP, Port: *portP}
   gocombo.SetConfig(&comboConfig)
 
 
   // TODO replace "./" into the given base path
-  http.Handle("/", http.FileServer(http.Dir(gocombo.ResourceDir())))
+  http.Handle("/", http.FileServer(http.Dir(comboConfig.BaseDir)))
 
   http.HandleFunc("/combo", gocombo.ServeHTTP)
 
   fmt.Println(fmt.Sprintf("Start YUI combo handler server(http://localhost%s) ...", comboConfig.Port))
+  fmt.Println(fmt.Sprintf("Serving files from directory: %s", comboConfig.BaseDir))
   log.Fatal(http.ListenAndServe(comboConfig.Port, nil))
 }
 

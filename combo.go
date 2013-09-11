@@ -5,7 +5,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -130,10 +129,4 @@ func readFile(request ComboRequest, contentsChanel chan string, resourceName str
 		panic(err)
 	}
 	contentsChanel <- updateImagePath(resourceName, string(contents))
-}
-
-// get the base directory
-func ResourceDir() string {
-	currentDir, _ := os.Getwd()
-	return filepath.Join(currentDir, comboConfig.BaseDir)
 }
