@@ -14,23 +14,28 @@ import (
 
 // it could be in the file system, it could be in the s3
 const (
-	DirLocation    = "./default-yui-built-files"
 	ContentType    = "Content-Type"
 	JSContentType  = "application/javascript; charset=utf-8"
 	CSSContentType = "text/css; charset=utf-8"
 )
 
-// if ignore version
-var withVersion bool = OptionValue("--with-version") == "true"
-var baseDir string = ResourceDir()
+var comboConfig ComboConfig
+
+type ComboConfig struct {
+	// servering files base directory
+	BaseDir string
+	// if with version number support
+	WithVersion bool
+	// server port
+	Port string
+}
 
 // Request represent a combo resource request, either js or css
 type ComboRequest struct {
 	// names of resources
 	Resources []string
 	// the resource type
-	Type     string
-	BasePath string
+	Type string
 }
 
 // handler of combo request
@@ -40,7 +45,7 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	resources := strings.Split(request.URL.RawQuery, "&")
 
 	// create the combo request
-	comboReq := ComboRequest{Resources: resources, BasePath: baseDir}
+	comboReq := ComboRequest{Resources: resources}
 
 	// set header of the response
 	acceptHeader := strings.Join(request.Header["Accept"], ",")
@@ -57,6 +62,11 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	io.WriteString(responseWriter, comboReq.ResponseString())
 }
 
+// set the combo config
+func SetConfig(config *ComboConfig) {
+	comboConfig = *config
+}
+
 // replace resource url in css with absolute paht
 func updateImagePath(resourceName string, contents string) string {
 	// replace url(./sorting.png) to
@@ -64,7 +74,7 @@ func updateImagePath(resourceName string, contents string) string {
 	imageReg := regexp.MustCompile("url\\('?(.*?)'?\\)")
 
 	version, path, _ := splitResourceName(resourceName)
-	if withVersion {
+	if comboConfig.WithVersion {
 		path = fmt.Sprintf("%s/build/%s", version, path)
 	}
 	contents = imageReg.ReplaceAllString(contents, fmt.Sprintf("url(%s/$1)", path))
@@ -108,16 +118,12 @@ func readFile(request ComboRequest, contentsChanel chan string, resourceName str
 	path := strings.Join(parts[1:], "/")
 
 	versionPart := []string{parts[0], "build"}
-	if withVersion {
+	if comboConfig.WithVersion {
 		path = fmt.Sprintf("%s/%s", strings.Join(versionPart, "/"), path)
 	}
 
-	var fileName string
-	if len(request.BasePath) > 1 {
-		fileName = filepath.Join(request.BasePath, path)
-	} else {
-		fileName = filepath.Join(DirLocation, path)
-	}
+	fileName := filepath.Join(comboConfig.BaseDir, path)
+
 	// get the file name
 	contents, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -129,5 +135,5 @@ func readFile(request ComboRequest, contentsChanel chan string, resourceName str
 // get the base directory
 func ResourceDir() string {
 	currentDir, _ := os.Getwd()
-	return filepath.Join(currentDir, OptionValue("--base"))
+	return filepath.Join(currentDir, comboConfig.BaseDir)
 }

@@ -16,8 +16,14 @@ comboBase: 'http://localhost:8123/combo?',
 # clone YUI3 into dir
 $ git clone git@github.com:yui/yui3.git
 
-# start gocombo (custom port like --port=4444)
-$ ./server/server --base="./yui3/build/"
+# start gocombo (custom port like --port=:4321)
+$ ./server/server
+
+# That's it! Now your go-combo server is running. If you want to more customization,
+# you can provide ```--base```, ```--with-version``` or ```--port``` flags.
+
+# provide custom yui3 build direcotry
+$ ./server/server --base="./some-where-else/yui3/build/"
 
 
 # you can also put different yui3 versions into different directories like this
@@ -31,9 +37,8 @@ $ ./server/server --base="./yui3/"  --with-version=true
 * ~~custom port~~
 * ~~able to resovle relative base dir(gocombo ../yui3/build/ )~~
 * ~~clone YUI instruction~~
+* ~~get OptionValue performance issue~~
 * gh-pages, logo
-* get OptionValue performance issue
-* better command line help(must provide resource base, available options)
 * compiled executable program for Linux platform
 * https support
 * performance test
