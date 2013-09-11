@@ -2,6 +2,8 @@
 
 > **Development in progress, not ready for production**
 
+> **Mac only for now, other platform need to be compiled from source**
+
 ### Basic usage
 #### YUI3 configuration
 ```javascript
@@ -17,19 +19,19 @@ comboBase: 'http://localhost:8123/combo?',
 $ git clone git@github.com:yui/yui3.git
 
 # start gocombo (custom port like --port=:4321)
-$ ./server/server
+$ ./bin/darwin/gocombo
 
 # That's it! Now your go-combo server is running. If you want to more customization,
 # you can provide ```--base```, ```--with-version``` or ```--port``` flags.
 
 # provide custom yui3 build direcotry
-$ ./server/server --base="./some-where-else/yui3/build/"
+$ ./bin/darwin/gocombo --base="./some-where-else/yui3/build/"
 
 
 # you can also put different yui3 versions into different directories like this
 # ./yui3/3.10.1/build/.
 # ./yui3/3.11.0/build/.
-$ ./server/server --base="./yui3/"  --with-version=true
+$ ./bin/darwin/gocombo --base="./yui3/"  --with-version=true
 ```
 
 ### TODO
