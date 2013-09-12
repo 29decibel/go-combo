@@ -32,9 +32,7 @@
 </h2>
 
 <blockquote>
-<p><strong>Development in progress, not ready for production</strong></p>
-
-<p><strong>Mac only for now, other platform need to be compiled from source</strong></p>
+<p><strong>Development in progress, not ready for production, need performance test.</strong></p>
 </blockquote>
 
 <h3>
@@ -56,19 +54,38 @@
 <span class="nv">$ </span>git clone git@github.com:yui/yui3.git
 
 <span class="c"># start gocombo (custom port like --port=:4321)</span>
-<span class="nv">$ </span>./bin/darwin/gocombo
+<span class="c"># choose your platform executable file in need(gocombo.linux or gocombo.exe)</span>
+<span class="nv">$ </span>./bin/gocombo.mac
 
 <span class="c"># That's it! Now your go-combo server is running. If you want to more customization,</span>
 <span class="c"># you can provide ```--base```, ```--with-version``` or ```--port``` flags.</span>
 
 <span class="c"># provide custom yui3 build direcotry</span>
-<span class="nv">$ </span>./bin/darwin/gocombo --base<span class="o">=</span><span class="s2">"./some-where-else/yui3/build/"</span>
+<span class="c"># choose your platform executable file in need(gocombo.linux or gocombo.exe)</span>
+<span class="nv">$ </span>./bin/gocombo.mac --base<span class="o">=</span><span class="s2">"./some-where-else/yui3/build/"</span>
 
 
 <span class="c"># you can also put different yui3 versions into different directories like this</span>
 <span class="c"># ./yui3/3.10.1/build/.</span>
 <span class="c"># ./yui3/3.11.0/build/.</span>
-<span class="nv">$ </span>./bin/darwin/gocombo --base<span class="o">=</span><span class="s2">"./yui3/"</span>  --with-version<span class="o">=</span><span class="nb">true</span>
+<span class="c"># choose your platform executable file in need(gocombo.linux or gocombo.exe)</span>
+<span class="nv">$ </span>./bin/gocombo.mac --base<span class="o">=</span><span class="s2">"./yui3/"</span>  --with-version<span class="o">=</span><span class="nb">true</span>
+</pre></div>
+
+<h4>
+<a name="compile-for-different-platforms" class="anchor" href="#compile-for-different-platforms"><span class="octicon octicon-link"></span></a>Compile for different platforms</h4>
+
+<div class="highlight highlight-bash"><pre><span class="c"># make sure install your go with --cross-compile-common option</span>
+<span class="nv">$ </span>brew install go --cross-compile-common
+
+<span class="c"># build for mac</span>
+<span class="nv">$ </span>go build -o gocombo.mac ./server/main.go
+
+<span class="c"># build for linux</span>
+<span class="nv">$ GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>386 <span class="nv">CGO_ENABLED</span><span class="o">=</span>0 go build -o gocombo.linux ./server/main.go
+
+<span class="c"># build for windows</span>
+<span class="nv">$ GOOS</span><span class="o">=</span>windows <span class="nv">GOARCH</span><span class="o">=</span>386 go build -o gocombo.exe ./server/main.go
 </pre></div>
 
 <h3>
@@ -80,8 +97,9 @@
 <li><del>able to resovle relative base dir(gocombo ../yui3/build/ )</del></li>
 <li><del>clone YUI instruction</del></li>
 <li><del>get OptionValue performance issue</del></li>
+<li><del>compiled executable program for Linux platform</del></li>
+<li>Makefile to create three platform executables</li>
 <li>gh-pages, logo</li>
-<li>compiled executable program for Linux platform</li>
 <li>https support</li>
 <li>performance test</li>
 <li>more tests</li>
