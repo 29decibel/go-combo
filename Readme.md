@@ -2,6 +2,7 @@
 
 > **Development in progress, not ready for production, need performance test.**
 
+![codeship](https://www.codeship.io/projects/65ac3150-ffd8-0130-98f8-1e341069b8b0/status)
 
 ### Basic usage
 #### YUI3 configuration
