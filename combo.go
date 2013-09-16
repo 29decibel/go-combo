@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"path/filepath"
 	"regexp"
@@ -59,7 +58,13 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	expires := time.Now().AddDate(3, 0, 0)
 	responseWriter.Header().Set("Expires", expires.Format(time.UnixDate))
 
-	io.WriteString(responseWriter, comboReq.ResponseString())
+	resourceContents := comboReq.ResponseString()
+	// some resource not being found, set the header status to 400
+	if resourceContents == "" {
+		http.Error(responseWriter, "Given resource not found ", http.StatusBadRequest)
+	}
+
+	io.WriteString(responseWriter, resourceContents)
 }
 
 // set the combo config
@@ -105,8 +110,15 @@ func (request ComboRequest) ResponseString() string {
 	}
 
 	// collect contents here
+	// return a bad request if there is one file not read successfuly
 	for i := 0; i < len(request.Resources); i++ {
-		contents += <-contentsChanel
+		content := <-contentsChanel
+		if content == "" {
+			contents = content
+			break
+		} else {
+			contents += content
+		}
 	}
 
 	return contents
@@ -129,7 +141,8 @@ func readFile(request ComboRequest, contentsChanel chan string, resourceName str
 	// if _, err := os.Stat(filename); err == nil
 	contents, err := ioutil.ReadFile(fileName)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Can not read file \"%s\" ! Please check if given --base path is correct.", fileName))
+		contentsChanel <- ""
+	} else {
+		contentsChanel <- updateImagePath(resourceName, string(contents))
 	}
-	contentsChanel <- updateImagePath(resourceName, string(contents))
 }

@@ -61,7 +61,6 @@ $ GOOS=windows GOARCH=386 go build -o gocombo.exe ./server/main.go
 * ~~compiled executable program for Linux platform~~
 * Makefile to create three platform executables
 * gh-pages, logo
-* https support
 * performance test
 * more tests
 
