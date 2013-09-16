@@ -78,14 +78,7 @@
 <div class="highlight highlight-bash"><pre><span class="c"># make sure install your go with --cross-compile-common option</span>
 <span class="nv">$ </span>brew install go --cross-compile-common
 
-<span class="c"># build for mac</span>
-<span class="nv">$ </span>go build -o gocombo.mac ./server/main.go
-
-<span class="c"># build for linux</span>
-<span class="nv">$ GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>386 <span class="nv">CGO_ENABLED</span><span class="o">=</span>0 go build -o gocombo.linux ./server/main.go
-
-<span class="c"># build for windows</span>
-<span class="nv">$ GOOS</span><span class="o">=</span>windows <span class="nv">GOARCH</span><span class="o">=</span>386 go build -o gocombo.exe ./server/main.go
+<span class="nv">$ </span>make
 </pre></div>
 
 <h3>
@@ -98,9 +91,8 @@
 <li><del>clone YUI instruction</del></li>
 <li><del>get OptionValue performance issue</del></li>
 <li><del>compiled executable program for Linux platform</del></li>
-<li>Makefile to create three platform executables</li>
-<li>gh-pages, logo</li>
-<li>https support</li>
+<li><del>Makefile to create three platform executables</del></li>
+<li><del>gh-pages, logo</del></li>
 <li>performance test</li>
 <li>more tests</li>
 </ul>
