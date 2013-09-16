@@ -42,14 +42,7 @@ $ ./bin/gocombo.mac --base="./yui3/"  --with-version=true
 # make sure install your go with --cross-compile-common option
 $ brew install go --cross-compile-common
 
-# build for mac
-$ go build -o gocombo.mac ./server/main.go
-
-# build for linux
-$ GOOS=linux GOARCH=386 CGO_ENABLED=0 go build -o gocombo.linux ./server/main.go
-
-# build for windows
-$ GOOS=windows GOARCH=386 go build -o gocombo.exe ./server/main.go
+$ make
 ```
 
 ### TODO
@@ -59,8 +52,8 @@ $ GOOS=windows GOARCH=386 go build -o gocombo.exe ./server/main.go
 * ~~clone YUI instruction~~
 * ~~get OptionValue performance issue~~
 * ~~compiled executable program for Linux platform~~
-* Makefile to create three platform executables
-* gh-pages, logo
+* ~~Makefile to create three platform executables~~
+* ~~gh-pages, logo~~
 * performance test
 * more tests
 
