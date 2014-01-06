@@ -20,6 +20,7 @@ const (
 
 var comboConfig ComboConfig
 
+// ComboConfig is for common config information
 type ComboConfig struct {
 	// servering files base directory
 	BaseDir string
@@ -29,7 +30,7 @@ type ComboConfig struct {
 	Port string
 }
 
-// Request represent a combo resource request, either js or css
+// ComboRequest represent a combo resource request, either js or css
 type ComboRequest struct {
 	// names of resources
 	Resources []string
@@ -37,7 +38,7 @@ type ComboRequest struct {
 	Type string
 }
 
-// handler of combo request
+// ServeHTTP is the handler of combo request
 // given http request, create a ComboRequest
 func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	// get the resources
@@ -67,7 +68,7 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	io.WriteString(responseWriter, resourceContents)
 }
 
-// set the combo config
+// SetConfig set the combo config
 func SetConfig(config *ComboConfig) {
 	comboConfig = *config
 }
@@ -99,7 +100,7 @@ func splitResourceName(name string) (string, string, string) {
 	return versionNumber, path, fileName
 }
 
-// get the response string of all resources
+// ResponseString is to get the response string of all resources
 func (request ComboRequest) ResponseString() string {
 	contents := ""
 

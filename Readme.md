@@ -57,3 +57,4 @@ $ make
 * performance test
 * more tests
 
+[![Analytics](https://ga-beacon.appspot.com/UA-31008790-2/gocombo/Readme)](https://github.com/29decibel/gocombo)
